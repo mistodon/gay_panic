@@ -5,6 +5,13 @@ authors = ["Vi <violet@hey.com>"]
 edition = "2021"
 description = "A Rust panic handler, but make it gay."
 
+homepage = "https://github.com/mistodon/gay_panic"
+repository = "https://github.com/mistodon/gay_panic"
+readme = "README.md"
+keywords = ["panic", "nightly", "terminal"]
+categories = ["development-tools"]
+license = "CC0-1.0"
+
 [dependencies]
 color_space = "0.5.3"
 owo-colors = "~3.4.0"
