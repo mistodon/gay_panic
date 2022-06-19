@@ -1,0 +1,11 @@
+[package]
+name = "gay_panic"
+version = "0.1.0"
+authors = ["Vi <violet@hey.com>"]
+edition = "2021"
+description = "A Rust panic handler, but make it gay."
+
+[dependencies]
+color_space = "0.5.3"
+owo-colors = "~3.4.0"
+sashimi = "~0.1.1"
