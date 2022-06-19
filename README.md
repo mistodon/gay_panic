@@ -19,6 +19,6 @@ fn main() {
 }
 ```
 
-![./pretty_gay_panic.png]
+![Rainbow backtrace](./pretty_gay_panic.png)
 
 **Note:** This crate currently requires nightly Rust to compile.
