@@ -1,0 +1,43 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  checks:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: All checks
+        run: sh scripts/citest
+
+  coverage:
+
+    runs-on: ubuntu-latest
+
+    container:
+      image:                    xd009642/tarpaulin:0.22.0-nightly
+
+      options:                  --security-opt seccomp=unconfined
+
+    steps:
+      - uses:                   actions/checkout@v3
+
+      - name:                   Generate code coverage
+        run: |
+          cargo +nightly tarpaulin --doc --tests --timeout 120 --out Xml
+
+      - name:                   Upload to codecov.io
+        uses:                   codecov/codecov-action@v2
+        with:
+          fail_ci_if_error:     true
+

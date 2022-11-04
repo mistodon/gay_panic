@@ -1,7 +1,4 @@
-#![feature(backtrace)]
-#![feature(backtrace_frames)]
-#![feature(panic_update_hook)]
-#![feature(panic_info_message)]
+//! A Rust panic handler, but make it gay.
 
 use owo_colors::{colors, AnsiColors, OwoColorize, Rgb};
 use sashimi::{LineBasedRules, Parser};
@@ -26,14 +23,15 @@ fn show_info(info: &PanicInfo) -> Result<()> {
         .name()
         .map(str::to_owned)
         .unwrap_or_else(|| "unknown".to_owned());
-    let message = info.message().map(|args| format!("{}", args));
+
+    let message = info.payload().downcast_ref::<&str>();
     let loc = info.location().unwrap();
     let at_sep = if message.is_some() { " at " } else { "" };
     eprintln!(
         "\nthread '{thread}' panicked{at_sep}'{message}', {fname}:{line}:{col}:\n",
         thread = thread.fg::<colors::BrightRed>(),
         at_sep = at_sep,
-        message = message.unwrap_or(String::new()).fg::<colors::BrightGreen>(),
+        message = message.unwrap_or(&"").fg::<colors::BrightGreen>(),
         fname = loc.file().fg::<colors::BrightCyan>(),
         line = loc.line().fg::<colors::BrightCyan>(),
         col = loc.column().fg::<colors::Yellow>(),
@@ -43,7 +41,7 @@ fn show_info(info: &PanicInfo) -> Result<()> {
 }
 
 fn show_backtrace(info: &PanicInfo, crate_name: String, backtrace: &Backtrace) -> Result<()> {
-    show_info(&info)?;
+    show_info(info)?;
 
     let source = backtrace.to_string();
     let frame_count = source.lines().count() / 2;
@@ -109,7 +107,7 @@ fn show_backtrace(info: &PanicInfo, crate_name: String, backtrace: &Backtrace) -
         let fsep = if modname.is_some() { "/" } else { "" };
         let modname = modname
             .map(|x| x.as_os_str().to_string_lossy().into_owned())
-            .unwrap_or("".into());
+            .unwrap_or_default();
 
         parser.expect(b":")?;
         let line_num = parse_int(parser)?;
@@ -186,9 +184,9 @@ impl CallPath {
             } else {
                 ""
             },
-            self.scope.as_ref().map(String::as_str).unwrap_or(""),
+            self.scope.as_deref().unwrap_or(""),
             if self.scope.is_some() { "::" } else { "" },
-            self.last.as_ref().map(String::as_str).unwrap_or(""),
+            self.last.as_deref().unwrap_or(""),
         ]
     }
 }
@@ -240,7 +238,7 @@ fn parse_path(parser: &mut Parser<LineBasedRules>) -> Result<CallPath> {
 ///     }
 /// );
 /// ```
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct Config {
     /// If `true`, the existing/default panic handler will be called after `gay_panic`'s
     /// executes.
@@ -250,28 +248,17 @@ pub struct Config {
     pub force_capture_backtrace: bool,
 }
 
-impl Default for Config {
-    fn default() -> Self {
-        Config {
-            call_previous_hook: false,
-            force_capture_backtrace: false,
-        }
-    }
-}
-
 /// Replaces the current panic hook with a more colorful one. Allows some configuration.
 ///
 /// # Examples
 ///
 /// ```rust
-/// fn main() {
-///     use gay_panic::Config;
+/// use gay_panic::Config;
 ///
-///     gay_panic::init_with(Config {
-///         call_previous_hook: false,
-///         force_capture_backtrace: true,
-///     });
-/// }
+/// gay_panic::init_with(Config {
+///     call_previous_hook: false,
+///     force_capture_backtrace: true,
+/// });
 /// ```
 pub fn init_with(config: Config) {
     let crate_name = PathBuf::from(module_path!())
@@ -280,7 +267,8 @@ pub fn init_with(config: Config) {
         .unwrap()
         .to_string_lossy()
         .into_owned();
-    panic::update_hook(move |hook, info| {
+    let hook = panic::take_hook();
+    panic::set_hook(Box::new(move |info| {
         let backtrace = if config.force_capture_backtrace {
             Backtrace::force_capture()
         } else {
@@ -294,7 +282,7 @@ pub fn init_with(config: Config) {
         if config.call_previous_hook {
             hook(info);
         }
-    });
+    }));
 }
 
 /// Replaces the current panic hook with a more colorful one. Uses default `Config`.
@@ -302,9 +290,7 @@ pub fn init_with(config: Config) {
 /// # Examples
 ///
 /// ```rust
-/// fn main() {
-///     gay_panic::init();
-/// }
+/// gay_panic::init();
 /// ```
 pub fn init() {
     init_with(Config::default());

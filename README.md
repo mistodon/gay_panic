@@ -2,8 +2,10 @@
 
 A Rust panic handler, but make it gay.
 
+[![CI](https://github.com/mistodon/gay_panic/actions/workflows/rust.yml/badge.svg)](https://github.com/mistodon/gay_panic/actions/workflows/rust.yml)
+[![Docs.rs](https://docs.rs/gay_panic/badge.svg)](https://docs.rs/gay_panic/1.0.0/gay_panic/)
 [![Crates.io](https://img.shields.io/crates/v/gay_panic.svg)](https://crates.io/crates/gay_panic)
-[![Docs.rs](https://docs.rs/gay_panic/badge.svg)](https://docs.rs/gay_panic/0.1.0/gay_panic/)
+<!-- [![codecov](https://codecov.io/github/mistodon/gay_panic/branch/main/graph/badge.svg?token=XN5QQCKX5Z)](https://codecov.io/github/mistodon/gay_panic) -->
 
 
 A panic handler that shows pretty backtraces:
@@ -20,5 +22,3 @@ fn main() {
 ```
 
 ![Rainbow backtrace](./pretty_gay_panic.png)
-
-**Note:** This crate currently requires nightly Rust to compile.
