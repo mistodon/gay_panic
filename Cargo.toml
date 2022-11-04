@@ -1,6 +1,6 @@
 [package]
 name = "gay_panic"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Vi <violet@hey.com>"]
 edition = "2021"
 description = "A Rust panic handler, but make it gay."
