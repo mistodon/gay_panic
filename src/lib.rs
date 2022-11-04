@@ -44,6 +44,11 @@ fn show_backtrace(info: &PanicInfo, crate_name: String, backtrace: &Backtrace) -
     show_info(info)?;
 
     let source = backtrace.to_string();
+    if source.starts_with("disabled backtrace") {
+        eprintln!("{}", source.fg::<colors::BrightMagenta>());
+        return Ok(());
+    }
+
     let frame_count = source.lines().count() / 2;
 
     let parser = &mut Parser::<LineBasedRules>::new(&source);
