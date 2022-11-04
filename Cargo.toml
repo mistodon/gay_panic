@@ -4,6 +4,7 @@ version = "1.0.0"
 authors = ["Vi <violet@hey.com>"]
 edition = "2021"
 description = "A Rust panic handler, but make it gay."
+rust-version = "1.65"
 
 homepage = "https://github.com/mistodon/gay_panic"
 repository = "https://github.com/mistodon/gay_panic"
