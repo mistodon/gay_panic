@@ -2,9 +2,8 @@
 name = "gay_panic"
 version = "1.0.1"
 authors = ["Vi <violet@hey.com>"]
-edition = "2021"
+edition = "2024"
 description = "A Rust panic handler, but make it gay."
-rust-version = "1.65"
 
 homepage = "https://github.com/mistodon/gay_panic"
 repository = "https://github.com/mistodon/gay_panic"
@@ -14,6 +13,6 @@ categories = ["development-tools"]
 license = "CC0-1.0"
 
 [dependencies]
-color_space = "0.5.3"
-owo-colors = "~3.4.0"
-sashimi = "~0.1.1"
+color_space = "0.5"
+owo-colors = "4.2"
+sashimi = "0.1"

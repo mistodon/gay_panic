@@ -1,6 +1,6 @@
 //! A Rust panic handler, but make it gay.
 
-use owo_colors::{colors, AnsiColors, OwoColorize, Rgb};
+use owo_colors::{AnsiColors, OwoColorize, Rgb, colors};
 use sashimi::{LineBasedRules, Parser};
 
 use std::{
@@ -129,7 +129,8 @@ fn show_backtrace(info: &PanicInfo, crate_name: String, backtrace: &Backtrace) -
                 col
             });
 
-        eprintln!("  {frame_number: >2}. {crate_name}{sep1}{scope}{sep2}{fn_name}\n        at {modname}{fsep}{fname}:{line}:{col}\n",
+        eprintln!(
+            "  {frame_number: >2}. {crate_name}{sep1}{scope}{sep2}{fn_name}\n        at {modname}{fsep}{fname}:{line}:{col}\n",
             frame_number = frame_number.color(frame_col),
             crate_name = crate_name.color(*crate_col),
             sep1 = sep1,
